@@ -1,20 +1,26 @@
 var express = require("express");
 var app = express();
 
-app.get("/url", (req, res, next) => {
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
+
+var booksData = require('./booksData.json');
+
+function findBook(isbn) {
+    const result = booksData.filter(obj => {
+        return obj.isbn === isbn;
+    });
+
+    return result;
+}
+
+app.get("/init", (req, res, next) => {
     res.json(["Tony", "Lisa", "Michael", "Ginger", "Food"]);
 });
 
 app.get('/search', function (req, res) {
-    setImmediate(function () {
-        try {
-            res.send('Success: ' + req.query.value)
-        } catch (e) {
-            res.status(400).send('Invalid JSON string')
-        }
-    })
-})
+    const result = findBook(req.query.isbn);
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+    res.send(result);
 });
